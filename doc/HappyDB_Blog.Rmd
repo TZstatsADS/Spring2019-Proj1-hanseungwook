@@ -1,5 +1,6 @@
 ---
-<center> title: 'ADS Project 1: What is happiness?' </center>
+title: 'ADS Project 1: What is happiness?'
+author: Seungwook Han (sh3264)
 output:
   html_document:
     df_print: paged
@@ -7,7 +8,6 @@ output:
 
 ![](../figs/happiness.jpg)
 
-\s \s
 Happiness is a vague concept. From the ancient Greeks, there has been great debate about the concept of happiness and what it entails in regards to pleasure. For everybody, what happiness constitutes of and how to achieve it is different. However, as we live in a highly interconnected society, we share many values that contribute to it -- spending time with your friends and family, eating good food, and achieving your dreams.
 
 Happiness is often described as "the experiece of joy, contentment, or positive well-being, combined with a sense that one's life is good, meaningful, and worthwhile."
@@ -44,9 +44,9 @@ library("gridExtra")
 hm_data <- read_csv("../output/processed_moments.csv")
 ```
 
-#What kind of emotions factor into happy moments?
+##What kind of emotions factor into happy moments?
 
-```{r Sentimental analysis}
+```{r Sentimental analysis, message=FALSE, warning=FALSE}
 hm_data_sel <- hm_data[sample(nrow(hm_data), 10000), ]
 n <- nrow(hm_data_sel)
 
@@ -103,7 +103,7 @@ To get a broader view of the description, we can look at the visualization of th
 
 Both of these visualizations of unigrams picture the dominant experiences that people cited as their happy moments shared the notions of spending time with friends and family and watching or playing something.
 
-# Do reflection periods make a difference in how people reflect on happy moments?
+## Do reflection periods make a difference in how people reflect on happy moments?
 ```{r Comparing unigrams in different reflection periods, warning=FALSE, message=FALSE}
 bag_of_words_24 <-  hm_data[hm_data$reflection_period == "24h",] %>%
   unnest_tokens(word, text)
@@ -123,11 +123,12 @@ p2 <- ggplot(data=word_count_3[1:10,], aes(x=reorder(word, n), y=n, fill=word)) 
 grid.arrange(p1, p2, nrow=1)
 
 ```
+
 When we compare the top 10 unigram word frequencies on the reflection period (24 hours or 3 months), we can see clear difference in actions/objects: 'watched,' 'dinner,' and 'morning' are uniquely present in the 24-hour reflection period, whereas 'family,' 'job,' and 'found' are uniquely present in the 3-month reflection period.
 
 Based on the above plots, it seems that, depending on the reflection periods, people can reflect on their happy moments in different ways. More specifically, the shorter reflection period may cause people to look back on immediate events. Suggested by the key words like 'watched,' 'dinner,' and 'morning', these unigrams illustrate actions or events occurred recently in their daily lives. On the other hand, the longer reflection period may cause people to reflect on more abstract values, such as 'job,' 'family,' and 'found.'
 
-# A closer look at happy experiences, feelings, and events
+## A closer look at happy experiences, feelings, and events
 ```{r Creating bigrams, warning=FALSE, message=FALSE}
 hm_bigrams <- hm_data %>%
   unnest_tokens(bigram, text, token = "ngrams", n = 2)
@@ -146,7 +147,7 @@ Now, we can create pairs of words from every adjacent word in the text, also kno
 
 As the plot above illustrates, the verbs of 'watched' and 'played' are commonly paired with 'movies' and 'game' respectively. Therefore, we can clearly identify that watching movies and playing videos are the most frequently cited activities that people think of as happy moments.
 
-#Conclusion
+##Conclusion
 
 Through the investigation and analysis of the HappyDB corpus, we can conclude with these following interesting trends/patterns:
 
@@ -156,3 +157,5 @@ Through the investigation and analysis of the HappyDB corpus, we can conclude wi
 
 3. Depending on the length of the reflection period, the descriptors and events for the happy moments could change. More specifically, it seems that the longer the reflection period, the more abstract values to which people cite their happiness.
 
+##Reference
+https://greatergood.berkeley.edu/topic/happiness/definition
