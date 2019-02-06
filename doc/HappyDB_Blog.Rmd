@@ -1,5 +1,5 @@
 ---
-title: 'ADS Project 1: What is happiness?'
+<center> title: 'ADS Project 1: What is happiness?' </center>
 output:
   html_document:
     df_print: paged
@@ -46,17 +46,18 @@ hm_data <- read_csv("../output/processed_moments.csv")
 
 #What kind of emotions factor into happy moments?
 
-```{r Sentimental analysis, warning=FALSE, message=FALSE}
-n <- nrow(hm_data)
+```{r Sentimental analysis}
+hm_data_sel <- hm_data[sample(nrow(hm_data), 10000), ]
+n <- nrow(hm_data_sel)
 
 hm.sentiment <- NULL
 hm.sentiment <- data.frame(original_hm=rep("", n), cleaned_hm=rep("", n), text=rep("", n), anger=rep(NA, n), anticipation=rep(NA, n), disgust=rep(NA, n), fear=rep(NA, n), joy=rep(NA, n), sadness=rep(NA, n), surprise=rep(NA, n), trust=rep(NA, n), negative=rep(NA, n), positive=rep(NA, n), stringsAsFactors=FALSE)
 
 for (i in 1:n) {
-  text <- hm_data$text[i]
+  text <- hm_data_sel$text[i]
   emotions <- get_nrc_sentiment(text)
-  hm.sentiment[i, ] <- c(hm_data$original_hm[i],
-                         hm_data$cleaned_hm[i],
+  hm.sentiment[i, ] <- c(hm_data_sel$original_hm[i],
+                         hm_data_sel$cleaned_hm[i],
                          text,
                          emotions)
 }
@@ -110,15 +111,11 @@ bag_of_words_24 <-  hm_data[hm_data$reflection_period == "24h",] %>%
 bag_of_words_3 <- hm_data[hm_data$reflection_period != "24h",] %>%
   unnest_tokens(word, text)
 
-
 word_count_24 <- bag_of_words_24 %>%
   count(word, sort = TRUE)
 
 word_count_3 <- bag_of_words_3 %>%
   count(word, sort = TRUE)
-
-head(word_count_24, 10)
-head(word_count_3, 10)
 
 p1 <- ggplot(data=word_count_24[1:10,], aes(x=reorder(word, n), y=n, fill=word)) + geom_bar(stat="identity", width=0.5) + coord_flip() + ylab("Frequency") + xlab("Word (24h)")
 p2 <- ggplot(data=word_count_3[1:10,], aes(x=reorder(word, n), y=n, fill=word)) + geom_bar(stat="identity", width=0.5) + coord_flip() + ylab("Frequency") + xlab("Word (3m)")
@@ -140,8 +137,7 @@ bigram_counts <- hm_bigrams %>%
   count(word1, word2, sort = TRUE)
 
 bigram_counts <- na.omit(bigram_counts)
-bigram_counts$bigram = paste(bigram_counts$word1, bigram_counts$word2, sep=" ")
-head(bigram_counts, 10)
+bigram_counts$bigram <- paste(bigram_counts$word1, bigram_counts$word2, sep=" ")
 
 ggplot(data=bigram_counts[1:10,], aes(x=bigram, y=n, fill=bigram)) + geom_bar(stat="identity", width=0.5) + coord_flip() + ylab("Frequency") + xlab("Bigram")
 ```
@@ -149,4 +145,14 @@ ggplot(data=bigram_counts[1:10,], aes(x=bigram, y=n, fill=bigram)) + geom_bar(st
 Now, we can create pairs of words from every adjacent word in the text, also known as bigrams. With the word frequency of these bigrams, we can relatively get a more detailed look at what kinds of activities, feelings, or experiences people refer to as happy moments.
 
 As the plot above illustrates, the verbs of 'watched' and 'played' are commonly paired with 'movies' and 'game' respectively. Therefore, we can clearly identify that watching movies and playing videos are the most frequently cited activities that people think of as happy moments.
+
+#Conclusion
+
+Through the investigation and analysis of the HappyDB corpus, we can conclude with these following interesting trends/patterns:
+
+1. Surprise is often a positive emotion that people cite in their happy moments. Although it could be a double-edged sword, in this context of happy moments, it seems to dominantly be a positive one.
+
+2. Playing games, watching movies, birthday, and mother seem to be common experiences that people believe to be their daily happy moments.
+
+3. Depending on the length of the reflection period, the descriptors and events for the happy moments could change. More specifically, it seems that the longer the reflection period, the more abstract values to which people cite their happiness.
 
