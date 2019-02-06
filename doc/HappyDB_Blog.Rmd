@@ -75,9 +75,11 @@ sentiment.props <- c(sum(hm.sentiment$anger), sum(hm.sentiment$anticipation), su
 sentiment.props <- sapply(sentiment.props, sentiment_p)
 emotions <- c("anger", "anticipation", "disgust", "fear", "joy", "sadness", "surprise", "trust")
 sentiment.df <- data.frame(emotions=emotions, sentiment.props=sentiment.props)
-ggplot(sentiment.df, aes(x=emotions, y=sentiment.props, fill=emotions)) + geom_bar(stat="identity") + xlab("Emotions") + ylab("Sentiment Proportions") + ggtitle("Sentiment Proportions from Happy Moments")
+ggplot(sentiment.df, aes(x=emotions, y=sentiment.props, fill=emotions)) + geom_bar(stat="identity") + xlab("Emotions") + ylab("Sentiment Proportions") + ggtitle("Sentiment Proportions from Happy Moments") + theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+For this sentiment analysis, 10,000 observations of the original HappyDB were randomly sampled because of computational overweight.
 
 After conducting sentiment analysis on the happy moments and reviewing the plot above, we can see the positive emotions like 'anticipation,' 'joy,' and 'trust' are significantly more present. This easily confirms that the happy moments people have described are indeed filled by positive emotions.
 
@@ -94,7 +96,7 @@ bag_of_words <-  hm_data %>%
 word_count <- bag_of_words %>%
   count(word, sort = TRUE)
 
-ggplot(data=word_count[1:10,], aes(x=word, y=n, fill=word)) + geom_bar(stat="identity", width=0.5) + coord_flip()
+ggplot(data=word_count[1:10,], aes(x=word, y=n, fill=word)) + geom_bar(stat="identity", width=0.5) + coord_flip() + ggtitle("Unigram Frequency") + theme(plot.title = element_text(hjust = 0.5))
 
 ```
 The above plot of the word frequencies for the top 10 most frequently words in people's description of happy moments places 'friend,' 'day,' 'time,' 'family,' 'watched,' 'home,' 'played,' 'feel,' 'finally,' and 'found.' Out of these, 'home' tells us where we feel happy most. 'friend,' 'family,' and 'time' indicate whom we place in our happy moments: friends and famil. 'played' and 'watched' indicate what we do in them. 
@@ -140,7 +142,7 @@ bigram_counts <- hm_bigrams %>%
 bigram_counts <- na.omit(bigram_counts)
 bigram_counts$bigram <- paste(bigram_counts$word1, bigram_counts$word2, sep=" ")
 
-ggplot(data=bigram_counts[1:10,], aes(x=bigram, y=n, fill=bigram)) + geom_bar(stat="identity", width=0.5) + coord_flip() + ylab("Frequency") + xlab("Bigram")
+ggplot(data=bigram_counts[1:10,], aes(x=bigram, y=n, fill=bigram)) + geom_bar(stat="identity", width=0.5) + coord_flip() + ylab("Frequency") + xlab("Bigram") + theme(plot.title = element_text(hjust = 0.5)) + ggtitle("Bigram Frequency")
 ```
 
 Now, we can create pairs of words from every adjacent word in the text, also known as bigrams. With the word frequency of these bigrams, we can relatively get a more detailed look at what kinds of activities, feelings, or experiences people refer to as happy moments.
